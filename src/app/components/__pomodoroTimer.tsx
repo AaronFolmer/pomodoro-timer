@@ -23,10 +23,23 @@ export function PomodoroTimer(props: Props): JSX.Element {
   const [timeCounting, setTimeCounting] = useState(false);
   const [working, setWorking] = useState(false);
   const [resting, setResting] = useState(false);
+  const [cyclesQtdManager, setCyclesQtdManager] = useState(
+    new Array(props.cycles - 1).fill(true)
+  );
 
   useEffect(() => {
     if (working) document.body.classList.add("working");
     if (resting) document.body.classList.remove("working");
+
+    if (mainTime > 0) return;
+
+    if (working && cyclesQtdManager.length > 0) {
+      configureRest(false);
+      cyclesQtdManager.pop();
+    } else if (working && cyclesQtdManager.length <= 0) {
+      configureRest(false);
+      setCyclesQtdManager(new Array(props.cycles - 1).fill(true));
+    }
   }, [working, resting]);
 
   const configureWork = () => {
